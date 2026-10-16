@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="eduGrad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#4F46E5" />
+      <stop offset="100%" stop-color="#7C3AED" />
+    </linearGradient>
+  </defs>
+  <!-- Rounded Indigo Box -->
+  <rect width="64" height="64" rx="16" fill="url(#eduGrad)" />
+  <!-- Graduation Cap -->
+  <path d="M32 14L10 25L32 36L54 25L32 14Z" fill="#FFFFFF" />
+  <path d="M18 30.5V42.5C18 46.5 24.2 50 32 50C39.8 50 46 46.5 46 42.5V30.5L32 37.5L18 30.5Z" fill="#E0E7FF" />
+  <path d="M51 27.5V41" stroke="#FBBF24" stroke-width="3.5" stroke-linecap="round" />
+  <circle cx="51" cy="42.5" r="2.5" fill="#FBBF24" />
+</svg>

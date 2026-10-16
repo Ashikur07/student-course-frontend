@@ -1,0 +1,132 @@
+<div class="space-y-6">
+  <!-- Header & Add Button -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-800">Student Directory</h1>
+      <p class="text-sm text-slate-500 mt-1">Manage student profiles, admissions, and contact information</p>
+    </div>
+    
+    <div class="flex items-center gap-4">
+      <!-- Total Count Badge -->
+      <span class="px-3 py-1.5 bg-slate-100 border border-slate-200 text-slate-600 font-semibold text-sm rounded-lg">
+        Total Students: <span class="text-indigo-600">{{ totalElements() }}</span>
+      </span>
+      
+      <button
+        (click)="openAddModal()"
+        class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium shadow-sm transition cursor-pointer"
+      >
+        + Register Student
+      </button>
+    </div>
+  </div>
+
+  <!-- Search & Filter Bar -->
+  <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col sm:flex-row items-center gap-3">
+    <div class="relative flex-1 w-full">
+      <input
+        type="text"
+        [ngModel]="searchKeyword()"
+        (ngModelChange)="searchKeyword.set($event)"
+        (keyup.enter)="onSearch()"
+        placeholder="Search by student code, name, or email..."
+        class="w-full pl-4 pr-10 py-2 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+      />
+    </div>
+    <div class="flex items-center gap-2 w-full sm:w-auto">
+      <button
+        (click)="onSearch()"
+        class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-900 text-white text-sm font-medium transition cursor-pointer"
+      >
+        Search
+      </button>
+      @if (searchKeyword()) {
+        <button
+          (click)="clearSearch()"
+          class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm font-medium transition cursor-pointer"
+        >
+          Reset
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Table Card -->
+  <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
+    @if (loading()) {
+      <app-loading-spinner message="Loading students from server..." />
+    } @else if (students().length === 0) {
+      <div class="p-12 text-center">
+        <p class="text-base font-semibold text-slate-700">No students found</p>
+        <p class="text-sm text-slate-400 mt-1">Click "+ Register Student" to add a new record.</p>
+      </div>
+    } @else {
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs uppercase whitespace-nowrap">
+              <th class="py-3.5 px-6 font-semibold">Code</th>
+              <th class="py-3.5 px-6 font-semibold">Full Name</th>
+              <th class="py-3.5 px-6 font-semibold">Email</th>
+              <th class="py-3.5 px-6 font-semibold">Phone</th>
+              <th class="py-3.5 px-6 font-semibold">Admission Date</th>
+              <th class="py-3.5 px-6 font-semibold text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 text-sm">
+            @for (student of students(); track student.id) {
+              <tr class="hover:bg-slate-50/80 transition">
+                <td class="py-3.5 px-6 whitespace-nowrap">
+                  <span class="px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 font-semibold text-xs">
+                    {{ student.studentCode }}
+                  </span>
+                </td>
+                <td class="py-3.5 px-6 font-semibold text-slate-800 whitespace-nowrap max-w-[200px] truncate" [title]="student.fullName">
+                  {{ student.fullName }}
+                </td>
+                <td class="py-3.5 px-6 text-slate-600 whitespace-nowrap">{{ student.email }}</td>
+                <td class="py-3.5 px-6 text-slate-600 whitespace-nowrap">{{ student.phone }}</td>
+                <td class="py-3.5 px-6 text-slate-500 whitespace-nowrap">{{ student.admissionDate }}</td>
+                
+                <!-- Action Buttons (Flex row for side-by-side) -->
+                <td class="py-3.5 px-6 text-right">
+                  <div class="flex items-center justify-end gap-2">
+                    <button
+                      (click)="openEditModal(student)"
+                      class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-50 text-amber-700 hover:bg-amber-100 transition cursor-pointer"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      (click)="confirmDelete(student)"
+                      class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-rose-50 text-rose-700 hover:bg-rose-100 transition cursor-pointer"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <app-pagination
+        [currentPage]="currentPage()"
+        [totalPages]="totalPages()"
+        [totalElements]="totalElements()"
+        [pageSize]="pageSize()"
+        (pageChange)="onPageChange($event)"
+        (sizeChange)="onSizeChange($event)"
+      />
+    }
+  </div>
+</div>
+
+<app-confirm-dialog
+  [isOpen]="!!studentToDelete()"
+  title="Delete Student Record"
+  [message]="'Are you sure you want to delete ' + (studentToDelete()?.fullName || '') + '? Note: Students with active enrollments cannot be deleted.'"
+  (confirm)="deleteStudent()"
+  (cancel)="studentToDelete.set(null)"
+/>

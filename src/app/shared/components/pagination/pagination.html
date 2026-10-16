@@ -1,0 +1,54 @@
+<div class="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4 bg-white border-t border-slate-200 text-sm">
+    <!-- Showing Info & Page Size Selector -->
+    <div class="flex items-center gap-4 text-slate-600">
+      <span>
+        Showing <strong class="text-slate-800">{{ startItem() }}</strong> to
+        <strong class="text-slate-800">{{ endItem() }}</strong> of
+        <strong class="text-slate-800">{{ totalElements() }}</strong> results
+      </span>
+  
+      <select
+      (change)="onSizeSelect($event)"
+      class="border border-slate-300 rounded-lg px-2.5 py-1 text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+    >
+      @for (size of [5, 10, 20, 50]; track size) {
+        <option [value]="size" [selected]="pageSize() === size">{{ size }} / page</option>
+      }
+    </select>
+    </div>
+  
+    <!-- Page Buttons -->
+    @if (totalPages() > 1) {
+      <div class="flex items-center gap-1.5">
+        <button
+          (click)="onPageSelect(currentPage() - 1)"
+          [disabled]="currentPage() === 0"
+          class="px-3 py-1.5 rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-100 disabled:opacity-40 disabled:pointer-events-none cursor-pointer transition"
+        >
+          Prev
+        </button>
+  
+        @for (page of pages(); track page) {
+          <button
+            (click)="onPageSelect(page)"
+            class="w-8 h-8 rounded-lg text-sm font-medium transition cursor-pointer"
+            [class]="
+              page === currentPage()
+                ? 'bg-indigo-600 text-white shadow-sm'
+                : 'text-slate-600 hover:bg-slate-100 border border-slate-200'
+            "
+          >
+            {{ page + 1 }}
+          </button>
+        }
+  
+        <button
+          (click)="onPageSelect(currentPage() + 1)"
+          [disabled]="currentPage() >= totalPages() - 1"
+          class="px-3 py-1.5 rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-100 disabled:opacity-40 disabled:pointer-events-none cursor-pointer transition"
+        >
+          Next
+        </button>
+      </div>
+    }
+  </div>
