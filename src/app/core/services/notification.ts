@@ -13,18 +13,18 @@ export class NotificationService {
   toasts = signal<ToastMessage[]>([]);
   private counter = 0;
 
-  showSuccess(message: string) {
-    this.addToast('success', message);
+  showSuccess(message: string, duration = 4000) {
+    this.addToast('success', message, duration);
   }
 
-  showError(message: string) {
-    this.addToast('error', message);
+  showError(message: string, duration = 6000) {
+    this.addToast('error', message, duration);
   }
 
-  private addToast(type: 'success' | 'error' | 'info', message: string) {
+  private addToast(type: 'success' | 'error' | 'info', message: string, duration = 4000) {
     const id = ++this.counter;
     this.toasts.update((prev) => [...prev, { id, type, message }]);
-    setTimeout(() => this.removeToast(id), 4000);
+    setTimeout(() => this.removeToast(id), duration);
   }
 
   removeToast(id: number) {
