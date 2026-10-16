@@ -11,10 +11,11 @@ export class StudentService {
   private http = inject(HttpClient);
   private endpoint = '/students';
 
-  getStudents(page = 0, size = 10, keyword = ''): Observable<PageableResponse<Student>> {
+  getStudents(page = 0, size = 10, keyword = '', sort = 'id,desc'): Observable<PageableResponse<Student>> {
     let params = new HttpParams()
       .set('page', page.toString())
-      .set('size', size.toString());
+      .set('size', size.toString())
+      .set('sort', sort);
 
     if (keyword.trim()) {
       params = params.set('keyword', keyword.trim()).set('search', keyword.trim());

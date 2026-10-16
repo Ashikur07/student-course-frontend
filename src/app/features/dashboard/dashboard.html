@@ -1,145 +1,247 @@
-<div class="space-y-8">
-    <!-- Page Header -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-      <div>
-        <h1 class="text-2xl font-bold text-slate-800">Dashboard Overview</h1>
-        <p class="text-sm text-slate-500 mt-1">
-          Real-time summary of students, courses, and academic enrollments
-        </p>
-      </div>
-  
-      <div class="flex items-center gap-3">
-        <a
-          routerLink="/students"
-          class="px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 text-sm font-medium hover:bg-slate-50 transition shadow-xs"
-        >
-          + Manage Students
-        </a>
-        <a
-          routerLink="/enrollments"
-          class="px-4 py-2 rounded-xl bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition shadow-sm"
-        >
-          + New Enrollment
-        </a>
-      </div>
+<div class="space-y-6 sm:space-y-8">
+  <!-- Page Header & Action Buttons -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Academic Overview</h1>
+      <p class="text-sm text-slate-500 mt-1">
+        Real-time statistical summary of students, courses, and academic enrollments
+      </p>
     </div>
-  
-    @if (loading()) {
-      <app-loading-spinner message="Fetching academic statistics..." />
-    } @else {
-      <!-- Summary Stats Cards -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <!-- Total Students -->
-        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
+
+    <div class="flex flex-wrap items-center gap-2.5 sm:gap-3">
+      <a
+        routerLink="/students/add"
+        class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-sm font-semibold shadow-2xs transition active:scale-[0.98] cursor-pointer"
+      >
+        <svg class="w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+        </svg>
+        <span>Add Student</span>
+      </a>
+
+      <a
+        routerLink="/enrollments/add"
+        class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold shadow-sm shadow-indigo-600/30 transition active:scale-[0.98] cursor-pointer"
+      >
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        <span>New Enrollment</span>
+      </a>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <app-loading-spinner message="Loading academic statistics and recent activities..." />
+  } @else {
+    <!-- 4 Harmonious Modern Stat Cards Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+      <!-- Card 1: Total Students -->
+      <div class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition duration-200 flex flex-col justify-between">
+        <div class="flex items-start justify-between">
           <div>
-            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Students</p>
-            <p class="text-3xl font-bold text-slate-800 mt-2">{{ stats().totalStudents }}</p>
-            <a routerLink="/students" class="text-xs text-indigo-600 font-medium hover:underline mt-2 inline-block">
-              View directory →
-            </a>
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Students</span>
+            <p class="text-3xl font-extrabold text-slate-900 mt-1.5 tracking-tight">{{ stats().totalStudents }}</p>
           </div>
-          <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl">
-            👨‍🎓
+          <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 ring-1 ring-indigo-500/20 flex items-center justify-center shadow-2xs">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+            </svg>
           </div>
         </div>
-  
-        <!-- Total Courses -->
-        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
-          <div>
-            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Courses</p>
-            <p class="text-3xl font-bold text-slate-800 mt-2">{{ stats().totalCourses }}</p>
-            <a routerLink="/courses" class="text-xs text-emerald-600 font-medium hover:underline mt-2 inline-block">
-              Browse catalog →
-            </a>
-          </div>
-          <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl">
-            📚
-          </div>
-        </div>
-  
-        <!-- Total Enrollments -->
-        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
-          <div>
-            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Enrollments</p>
-            <p class="text-3xl font-bold text-slate-800 mt-2">{{ stats().totalEnrollments }}</p>
-            <a routerLink="/enrollments" class="text-xs text-amber-600 font-medium hover:underline mt-2 inline-block">
-              Manage records →
-            </a>
-          </div>
-          <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl">
-            📝
-          </div>
-        </div>
-  
-        <!-- Active Status -->
-        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
-          <div>
-            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Active Enrollments</p>
-            <p class="text-3xl font-bold text-emerald-600 mt-2">{{ stats().activeEnrollments }}</p>
-            <span class="text-xs text-slate-400 mt-2 inline-block">Currently Ongoing</span>
-          </div>
-          <div class="w-12 h-12 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center text-2xl">
-            ✅
-          </div>
-        </div>
-      </div>
-  
-      <!-- Recent Enrollments Table -->
-      <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
-        <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-          <h3 class="font-bold text-slate-800">Recent Enrollments</h3>
-          <a routerLink="/enrollments" class="text-xs font-semibold text-indigo-600 hover:text-indigo-700">
-            View All
+        <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+          <span class="text-slate-400 font-medium">Registered directory</span>
+          <a routerLink="/students" class="text-indigo-600 font-semibold hover:text-indigo-700 flex items-center gap-1">
+            Browse
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
           </a>
         </div>
-  
-        @if (stats().recentEnrollments.length === 0) {
-          <div class="p-8 text-center text-slate-400 text-sm">
-            No enrollment records found yet.
+      </div>
+
+      <!-- Card 2: Total Courses -->
+      <div class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition duration-200 flex flex-col justify-between">
+        <div class="flex items-start justify-between">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Courses</span>
+            <p class="text-3xl font-extrabold text-slate-900 mt-1.5 tracking-tight">{{ stats().totalCourses }}</p>
           </div>
-        } @else {
-          <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-              <thead>
-                <tr class="bg-slate-50 text-slate-500 text-xs uppercase border-b border-slate-200">
-                  <th class="py-3.5 px-6 font-semibold">ID</th>
-                  <th class="py-3.5 px-6 font-semibold">Student</th>
-                  <th class="py-3.5 px-6 font-semibold">Course</th>
-                  <th class="py-3.5 px-6 font-semibold">Date</th>
-                  <th class="py-3.5 px-6 font-semibold">Status</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-100 text-sm">
-                @for (item of stats().recentEnrollments; track item.id) {
-                  <tr class="hover:bg-slate-50/80 transition">
-                    <td class="py-3.5 px-6 font-medium text-slate-700">#{{ item.id }}</td>
-                    <td class="py-3.5 px-6 text-slate-800 font-medium">
-                      {{ item.studentName || 'Student #' + item.studentId }}
-                    </td>
-                    <td class="py-3.5 px-6 text-slate-600">
-                      {{ item.courseName || 'Course #' + item.courseId }}
-                    </td>
-                    <td class="py-3.5 px-6 text-slate-500">{{ item.enrollmentDate }}</td>
-                    <td class="py-3.5 px-6">
+          <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 ring-1 ring-blue-500/20 flex items-center justify-center shadow-2xs">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+          </div>
+        </div>
+        <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+          <span class="text-slate-400 font-medium">Curriculum catalog</span>
+          <a routerLink="/courses" class="text-blue-600 font-semibold hover:text-blue-700 flex items-center gap-1">
+            Browse
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Card 3: Total Enrollments -->
+      <div class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition duration-200 flex flex-col justify-between">
+        <div class="flex items-start justify-between">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Enrollments</span>
+            <p class="text-3xl font-extrabold text-slate-900 mt-1.5 tracking-tight">{{ stats().totalEnrollments }}</p>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-violet-50 text-violet-600 ring-1 ring-violet-500/20 flex items-center justify-center shadow-2xs">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+            </svg>
+          </div>
+        </div>
+        <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+          <span class="text-slate-400 font-medium">Course registrations</span>
+          <a routerLink="/enrollments" class="text-violet-600 font-semibold hover:text-violet-700 flex items-center gap-1">
+            Browse
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Card 4: Active Enrollments -->
+      <div class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition duration-200 flex flex-col justify-between">
+        <div class="flex items-start justify-between">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Active Enrollments</span>
+            <p class="text-3xl font-extrabold text-emerald-600 mt-1.5 tracking-tight">{{ stats().activeEnrollments }}</p>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 ring-1 ring-emerald-500/20 flex items-center justify-center shadow-2xs">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+        </div>
+        <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+          <span class="inline-flex items-center gap-1.5 text-emerald-600 font-semibold">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            Currently Ongoing
+          </span>
+          <a routerLink="/enrollments" class="text-slate-500 hover:text-slate-800 font-medium">
+            Details
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Enrollments Table Card -->
+    <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
+      <div class="px-5 sm:px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-bold text-slate-900 text-sm sm:text-base">Recent Enrollments</h3>
+            <p class="text-xs text-slate-500">Latest academic assignments registered in the system</p>
+          </div>
+        </div>
+
+        <a
+          routerLink="/enrollments"
+          class="text-xs font-semibold text-indigo-600 hover:text-indigo-700 flex items-center gap-1 transition"
+        >
+          View All Records
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </a>
+      </div>
+
+      @if (stats().recentEnrollments.length === 0) {
+        <div class="p-12 text-center">
+          <div class="w-12 h-12 mx-auto rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mb-3">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+          </div>
+          <p class="text-sm font-semibold text-slate-700">No enrollment records found yet</p>
+          <p class="text-xs text-slate-400 mt-1">Get started by enrolling a student into an academic course.</p>
+          <a
+            routerLink="/enrollments/add"
+            class="inline-flex items-center gap-1.5 mt-4 px-4 py-2 rounded-xl bg-indigo-600 text-white text-xs font-semibold hover:bg-indigo-700 transition shadow-sm"
+          >
+            + Create First Enrollment
+          </a>
+        </div>
+      } @else {
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-50/90 text-slate-600 text-[11px] font-bold uppercase tracking-wider border-b border-slate-200/80 whitespace-nowrap">
+                <th class="py-3.5 px-6">ID</th>
+                <th class="py-3.5 px-6">Student</th>
+                <th class="py-3.5 px-6">Course</th>
+                <th class="py-3.5 px-6">Enrollment Date</th>
+                <th class="py-3.5 px-6 text-center">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 text-sm">
+              @for (item of stats().recentEnrollments; track item.id) {
+                <tr class="hover:bg-slate-50/70 transition">
+                  <td class="py-3.5 px-6 font-mono text-xs font-semibold text-slate-400">
+                    #{{ item.id }}
+                  </td>
+
+                  <td class="py-3.5 px-6 text-slate-800 font-semibold whitespace-nowrap">
+                    <div class="flex items-center gap-2.5">
+                      <div class="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-700 flex items-center justify-center font-bold text-xs shrink-0">
+                        {{ (item.studentName || 'S').charAt(0).toUpperCase() }}
+                      </div>
+                      <span class="truncate max-w-[180px] sm:max-w-xs">{{ item.studentName || 'Student #' + item.studentId }}</span>
+                    </div>
+                  </td>
+
+                  <td class="py-3.5 px-6 text-slate-600 font-medium whitespace-nowrap">
+                    <span class="truncate max-w-[180px] sm:max-w-xs inline-block">{{ item.courseName || 'Course #' + item.courseId }}</span>
+                  </td>
+
+                  <td class="py-3.5 px-6 text-slate-500 text-xs whitespace-nowrap font-medium">
+                    {{ item.enrollmentDate }}
+                  </td>
+
+                  <td class="py-3.5 px-6 text-center whitespace-nowrap">
+                    <span
+                      class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold"
+                      [class]="
+                        item.status === 'ACTIVE'
+                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/80'
+                          : item.status === 'COMPLETED'
+                          ? 'bg-blue-50 text-blue-700 border border-blue-200/80'
+                          : 'bg-rose-50 text-rose-700 border border-rose-200/80'
+                      "
+                    >
                       <span
-                        class="px-2.5 py-1 rounded-full text-xs font-semibold"
+                        class="w-1.5 h-1.5 rounded-full"
                         [class]="
                           item.status === 'ACTIVE'
-                            ? 'bg-emerald-100 text-emerald-700'
+                            ? 'bg-emerald-500 animate-pulse'
                             : item.status === 'COMPLETED'
-                            ? 'bg-indigo-100 text-indigo-700'
-                            : 'bg-rose-100 text-rose-700'
+                            ? 'bg-blue-500'
+                            : 'bg-rose-500'
                         "
-                      >
-                        {{ item.status }}
-                      </span>
-                    </td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          </div>
-        }
-      </div>
-    }
-  </div>
+                      ></span>
+                      {{ item.status }}
+                    </span>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  }
+</div>

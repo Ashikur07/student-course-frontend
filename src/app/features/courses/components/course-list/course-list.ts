@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Course } from '../../models/course.model';
 import { CourseService } from '../../services/course';
 import { NotificationService } from '../../../../core/services/notification';
+import { RecentTrackerService } from '../../../../core/services/recent-tracker.service';
 import { LoadingSpinner } from '../../../../shared/components/loading-spinner/loading-spinner';
 import { Pagination } from '../../../../shared/components/pagination/pagination';
 import { ConfirmDialog } from '../../../../shared/components/confirm-dialog/confirm-dialog';
@@ -18,6 +19,7 @@ import { ConfirmDialog } from '../../../../shared/components/confirm-dialog/conf
 export class CourseList implements OnInit {
   private courseService = inject(CourseService);
   private notification = inject(NotificationService);
+  private recentTracker = inject(RecentTrackerService);
   private router = inject(Router);
 
   courses = signal<Course[]>([]);
@@ -40,10 +42,19 @@ export class CourseList implements OnInit {
   loadCourses(): void {
     this.loading.set(true);
     this.courseService
-      .getCourses(this.currentPage(), this.pageSize(), this.searchKeyword())
+      .getCourses(this.currentPage(), this.pageSize(), this.searchKeyword(), 'id,desc')
       .subscribe({
         next: (res) => {
-          this.courses.set(res.content || []);
+          let list = [...(res.content || [])];
+          const recentId = this.recentTracker.recentCourseId();
+          if (recentId && this.currentPage() === 0) {
+            const idx = list.findIndex((c) => c.id === recentId);
+            if (idx > -1) {
+              const [target] = list.splice(idx, 1);
+              list.unshift(target);
+            }
+          }
+          this.courses.set(list);
           this.totalElements.set(res.totalElements || 0);
           this.totalPages.set(res.totalPages || 0);
           this.loading.set(false);

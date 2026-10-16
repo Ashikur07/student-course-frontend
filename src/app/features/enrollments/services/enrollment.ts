@@ -16,11 +16,13 @@ export class EnrollmentService {
     size = 10,
     studentId?: number | null,
     courseId?: number | null,
-    status?: string | null
+    status?: string | null,
+    sort = 'id,desc'
   ): Observable<PageableResponse<Enrollment> | Enrollment[]> {
     let params = new HttpParams()
       .set('page', page.toString())
-      .set('size', size.toString());
+      .set('size', size.toString())
+      .set('sort', sort);
 
     if (studentId) params = params.set('studentId', studentId.toString());
     if (courseId) params = params.set('courseId', courseId.toString());

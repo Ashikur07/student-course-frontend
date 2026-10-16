@@ -1,36 +1,94 @@
-<aside class="w-64 bg-slate-900 text-white h-screen overflow-y-auto flex flex-col shadow-xl select-none">
-    <!-- Brand Logo -->
-    <div class="h-16 flex items-center gap-3 px-6 border-b border-slate-800">
-      <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center font-bold text-lg shadow">
-        S
+<aside class="w-68 bg-white text-slate-800 h-screen overflow-y-auto flex flex-col shadow-xs select-none border-r border-slate-200/90">
+  <!-- Brand Header -->
+  <div class="h-18 flex items-center justify-between px-5 border-b border-slate-100 bg-white">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-blue-600 flex items-center justify-center text-white shadow-sm ring-1 ring-indigo-500/10">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+        </svg>
       </div>
       <div>
-        <h1 class="font-bold text-base tracking-wide text-white leading-none">EduManage</h1>
-        <span class="text-[11px] text-slate-400">Student-Course Portal</span>
+        <h1 class="font-extrabold text-base tracking-tight text-slate-900 leading-none">EduManage</h1>
+        <p class="text-[11px] text-slate-400 mt-1 font-medium">Academic Portal</p>
       </div>
     </div>
-  
-    <!-- Navigation Links -->
-    <nav class="flex-1 px-4 py-6 space-y-1.5">
-      @for (item of navItems; track item.route) {
-        <a
-          [routerLink]="item.route"
-          routerLinkActive="bg-indigo-600 text-white shadow-md shadow-indigo-600/30"
-          [routerLinkActiveOptions]="{ exact: false }"
-          class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-all duration-150"
-        >
-          <span class="text-lg">{{ item.icon }}</span>
-          <span>{{ item.label }}</span>
-        </a>
-      }
-    </nav>
-  
-    <!-- Footer Info -->
-    <div class="p-4 m-4 rounded-xl bg-slate-800/60 border border-slate-700/50 text-xs text-slate-400">
-      <p class="font-semibold text-slate-200">System Status</p>
-      <div class="flex items-center gap-2 mt-1">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span>Spring Boot API Connected</span>
-      </div>
+
+    <!-- Mobile Close Drawer Button -->
+    <button
+      (click)="layoutService.closeSidebar()"
+      class="md:hidden p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition cursor-pointer"
+      aria-label="Close navigation"
+    >
+      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Navigation -->
+  <div class="flex-1 px-3 py-5 space-y-6">
+    <div>
+      <p class="px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
+        Academic Modules
+      </p>
+
+      <nav class="space-y-1">
+        @for (item of navItems; track item.route) {
+          <a
+            [routerLink]="item.route"
+            routerLinkActive="bg-indigo-50 text-indigo-700 font-bold border border-indigo-200/80 shadow-2xs !text-indigo-700"
+            [routerLinkActiveOptions]="{ exact: false }"
+            (click)="layoutService.closeSidebar()"
+            class="group flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all duration-150 cursor-pointer"
+          >
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-100 text-slate-500 group-hover:text-indigo-600 group-hover:bg-indigo-50 transition group-[.border-indigo-200\/80]:bg-indigo-600 group-[.border-indigo-200\/80]:text-white">
+                @switch (item.icon) {
+                  @case ('dashboard') {
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                    </svg>
+                  }
+                  @case ('students') {
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                  }
+                  @case ('courses') {
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                  }
+                  @case ('enrollments') {
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                    </svg>
+                  }
+                }
+              </div>
+              <span>{{ item.label }}</span>
+            </div>
+            <svg class="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity text-slate-400 group-[.border-indigo-200\/80]:opacity-100 group-[.border-indigo-200\/80]:text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </a>
+        }
+      </nav>
     </div>
-  </aside>
+  </div>
+
+  <!-- Bottom System Status Card -->
+  <div class="p-3.5 m-3 rounded-2xl bg-slate-50 border border-slate-200/90 text-xs text-slate-600">
+    <div class="flex items-center justify-between mb-1.5">
+      <span class="font-bold text-slate-800 text-[11px] uppercase tracking-wider">System Status</span>
+      <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+        Live API
+      </span>
+    </div>
+    <p class="text-slate-500 text-[11px] leading-tight">
+      Spring Boot backend connected with JPA / Hibernate.
+    </p>
+  </div>
+</aside>

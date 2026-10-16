@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { StudentRequest } from '../../models/student.model';
 import { StudentService } from '../../services/student';
 import { NotificationService } from '../../../../core/services/notification';
+import { RecentTrackerService } from '../../../../core/services/recent-tracker.service';
 import { LoadingSpinner } from '../../../../shared/components/loading-spinner/loading-spinner';
 
 @Component({
@@ -19,6 +20,7 @@ export class StudentForm implements OnInit {
   private route = inject(ActivatedRoute);
   private studentService = inject(StudentService);
   private notification = inject(NotificationService);
+  private recentTracker = inject(RecentTrackerService);
 
   studentId = signal<number | null>(null);
   submitting = signal<boolean>(false);
@@ -76,7 +78,11 @@ export class StudentForm implements OnInit {
       : this.studentService.createStudent(payload);
 
     request$.subscribe({
-      next: () => {
+      next: (savedStudent: any) => {
+        const resultId = savedStudent?.id || id;
+        if (resultId) {
+          this.recentTracker.setRecentStudent(resultId);
+        }
         this.notification.showSuccess(id ? 'Student updated successfully!' : 'Student registered successfully!');
         this.router.navigate(['/students']);
       },

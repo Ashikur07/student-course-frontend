@@ -8,6 +8,7 @@ import { CourseService } from '../../../courses/services/course';
 import { Student } from '../../../students/models/student.model';
 import { Course } from '../../../courses/models/course.model';
 import { NotificationService } from '../../../../core/services/notification';
+import { RecentTrackerService } from '../../../../core/services/recent-tracker.service';
 import { LoadingSpinner } from '../../../../shared/components/loading-spinner/loading-spinner';
 
 @Component({
@@ -25,6 +26,7 @@ export class EnrollmentForm implements OnInit {
   private studentService = inject(StudentService);
   private courseService = inject(CourseService);
   private notification = inject(NotificationService);
+  private recentTracker = inject(RecentTrackerService);
 
   enrollmentId = signal<number | null>(null);
   submitting = signal<boolean>(false);
@@ -98,7 +100,11 @@ export class EnrollmentForm implements OnInit {
       : this.enrollmentService.createEnrollment(payload);
 
     request$.subscribe({
-      next: () => {
+      next: (savedEnrollment: any) => {
+        const resultId = savedEnrollment?.id || id;
+        if (resultId) {
+          this.recentTracker.setRecentEnrollment(resultId);
+        }
         this.notification.showSuccess(id ? 'Enrollment updated successfully!' : 'Student enrolled successfully!');
         this.router.navigate(['/enrollments']);
       },

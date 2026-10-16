@@ -1,5 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { LayoutService } from '../../../core/services/layout.service';
+
+interface NavItem {
+  label: string;
+  route: string;
+  icon: 'dashboard' | 'students' | 'courses' | 'enrollments';
+  badge?: string;
+}
 
 @Component({
   selector: 'app-sidebar',
@@ -9,10 +17,12 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   styleUrl: './sidebar.css',
 })
 export class Sidebar {
-  navItems = [
-    { label: 'Dashboard', route: '/dashboard', icon: '📊' },
-    { label: 'Students', route: '/students', icon: '👨‍🎓' },
-    { label: 'Courses', route: '/courses', icon: '📚' },
-    { label: 'Enrollments', route: '/enrollments', icon: '📝' },
+  layoutService = inject(LayoutService);
+
+  navItems: NavItem[] = [
+    { label: 'Dashboard', route: '/dashboard', icon: 'dashboard' },
+    { label: 'Students', route: '/students', icon: 'students' },
+    { label: 'Courses', route: '/courses', icon: 'courses' },
+    { label: 'Enrollments', route: '/enrollments', icon: 'enrollments' },
   ];
 }

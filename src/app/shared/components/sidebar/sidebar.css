@@ -1,0 +1,14 @@
+:host {
+  display: block;
+  height: 100%;
+  flex-shrink: 0;
+}
+
+/* Ensure desktop sidebar is permanently visible and never translated off-screen */
+@media (min-width: 768px) {
+  :host {
+    transform: none !important;
+    position: static !important;
+    visibility: visible !important;
+  }
+}

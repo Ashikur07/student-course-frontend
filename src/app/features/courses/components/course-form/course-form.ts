@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { CourseRequest } from '../../models/course.model';
 import { CourseService } from '../../services/course';
 import { NotificationService } from '../../../../core/services/notification';
+import { RecentTrackerService } from '../../../../core/services/recent-tracker.service';
 import { LoadingSpinner } from '../../../../shared/components/loading-spinner/loading-spinner';
 
 @Component({
@@ -19,6 +20,7 @@ export class CourseForm implements OnInit {
   private route = inject(ActivatedRoute);
   private courseService = inject(CourseService);
   private notification = inject(NotificationService);
+  private recentTracker = inject(RecentTrackerService);
 
   // Eikhane courseId signal add kora hoyeche notun page er jonno
   courseId = signal<number | null>(null);
@@ -74,7 +76,11 @@ export class CourseForm implements OnInit {
       : this.courseService.createCourse(payload);
 
     request$.subscribe({
-      next: () => {
+      next: (savedCourse: any) => {
+        const resultId = savedCourse?.id || id;
+        if (resultId) {
+          this.recentTracker.setRecentCourse(resultId);
+        }
         this.notification.showSuccess(id ? 'Course updated successfully!' : 'Course created successfully!');
         this.router.navigate(['/courses']);
       },

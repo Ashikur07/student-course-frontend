@@ -8,6 +8,7 @@ import { CourseService } from '../../../courses/services/course';
 import { Student } from '../../../students/models/student.model';
 import { Course } from '../../../courses/models/course.model';
 import { NotificationService } from '../../../../core/services/notification';
+import { RecentTrackerService } from '../../../../core/services/recent-tracker.service';
 import { LoadingSpinner } from '../../../../shared/components/loading-spinner/loading-spinner';
 import { Pagination } from '../../../../shared/components/pagination/pagination';
 import { ConfirmDialog } from '../../../../shared/components/confirm-dialog/confirm-dialog';
@@ -24,6 +25,7 @@ export class EnrollmentList implements OnInit {
   private studentService = inject(StudentService);
   private courseService = inject(CourseService);
   private notification = inject(NotificationService);
+  private recentTracker = inject(RecentTrackerService);
   private router = inject(Router);
 
   enrollments = signal<Enrollment[]>([]);
@@ -66,35 +68,63 @@ export class EnrollmentList implements OnInit {
         this.pageSize(),
         this.filterStudentId() || undefined,
         this.filterCourseId() || undefined,
-        this.filterStatus() || undefined
+        this.filterStatus() || undefined,
+        'id,desc'
       )
       .subscribe({
         next: (res) => {
+          let list: Enrollment[] = [];
           if (Array.isArray(res)) {
-            this.enrollments.set(res);
+            list = [...res];
             this.totalElements.set(res.length);
             this.totalPages.set(1);
           } else {
-            this.enrollments.set(res.content || []);
+            list = [...(res.content || [])];
             this.totalElements.set(res.totalElements || 0);
             this.totalPages.set(res.totalPages || 0);
           }
+
+          // Move recently added or updated enrollment to top of page 1
+          const recentId = this.recentTracker.recentEnrollmentId();
+          if (recentId && this.currentPage() === 0) {
+            const idx = list.findIndex((e) => e.id === recentId);
+            if (idx > -1) {
+              const [target] = list.splice(idx, 1);
+              list.unshift(target);
+            }
+          }
+
+          this.enrollments.set(list);
           this.loading.set(false);
         },
         error: () => this.loading.set(false),
       });
   }
 
-  getStudentDisplay(item: Enrollment): string {
-    if (item.studentName) return `${item.studentCode ? item.studentCode + ' - ' : ''}${item.studentName}`;
+  getStudentName(item: Enrollment): string {
+    if (item.studentName) return item.studentName;
     const found = this.students().find((s) => s.id === item.studentId);
-    return found ? `${found.studentCode} - ${found.fullName}` : `Student #${item.studentId}`;
+    return found ? found.fullName : `Student #${item.studentId}`;
+  }
+
+  getStudentDisplay(item: Enrollment): string {
+    return this.getStudentName(item);
+  }
+
+  getCourseCode(item: Enrollment): string {
+    if (item.courseCode) return item.courseCode;
+    const found = this.courses().find((c) => c.id === item.courseId);
+    return found ? found.courseCode : '';
+  }
+
+  getCourseName(item: Enrollment): string {
+    if (item.courseName) return item.courseName;
+    const found = this.courses().find((c) => c.id === item.courseId);
+    return found ? found.courseName : `Course #${item.courseId}`;
   }
 
   getCourseDisplay(item: Enrollment): string {
-    if (item.courseName) return `${item.courseCode ? item.courseCode + ' - ' : ''}${item.courseName}`;
-    const found = this.courses().find((c) => c.id === item.courseId);
-    return found ? `${found.courseCode} - ${found.courseName}` : `Course #${item.courseId}`;
+    return this.getCourseName(item);
   }
 
   applyFilter(): void {

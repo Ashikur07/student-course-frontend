@@ -1,139 +1,225 @@
 <div class="space-y-6">
-  <!-- Header & Add Button -->
+  <!-- Page Header & Action Bar -->
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
     <div>
-      <h1 class="text-2xl font-bold text-slate-800">Course Enrollments</h1>
-      <p class="text-sm text-slate-500 mt-1">Assign students to courses and track academic completion status</p>
+      <div class="flex items-center gap-2.5">
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Course Enrollments</h1>
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-violet-50 text-violet-700 border border-violet-200/80">
+          {{ totalElements() }} Enrollments
+        </span>
+      </div>
+      <p class="text-sm text-slate-500 mt-1">
+        Assign students to courses, track academic progress, and manage enrollment status
+      </p>
     </div>
-    
-    <div class="flex items-center gap-4">
-      <!-- Total Count Badge -->
-      <span class="px-3 py-1.5 bg-slate-100 border border-slate-200 text-slate-600 font-semibold text-sm rounded-lg">
-        Total Records: <span class="text-amber-600">{{ totalElements() }}</span>
-      </span>
 
+    <div class="flex items-center gap-3">
       <button
         (click)="openAddModal()"
-        class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium shadow-sm transition cursor-pointer"
+        class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white text-sm font-semibold shadow-md shadow-indigo-600/20 transition cursor-pointer w-full sm:w-auto"
       >
-        + New Enrollment
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        <span>New Enrollment</span>
       </button>
     </div>
   </div>
 
-  <!-- Filter Bar -->
-  <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs grid grid-cols-1 sm:grid-cols-4 gap-3">
-    <!-- Filter by Student -->
-    <select
-      [ngModel]="filterStudentId()"
-      (ngModelChange)="filterStudentId.set($event); applyFilter()"
-      class="px-3.5 py-2 rounded-xl border border-slate-300 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
-    >
-      <option [ngValue]="null">All Students</option>
-      @for (st of students(); track st.id) {
-        <option [ngValue]="st.id">{{ st.studentCode }} - {{ st.fullName }}</option>
-      }
-    </select>
+  <!-- Filter Card -->
+  <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-xs">
+    <div class="flex items-center gap-2 mb-3 text-xs font-bold uppercase tracking-wider text-slate-500">
+      <svg class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+      </svg>
+      <span>Filter Records</span>
+    </div>
 
-    <!-- Filter by Course -->
-    <select
-      [ngModel]="filterCourseId()"
-      (ngModelChange)="filterCourseId.set($event); applyFilter()"
-      class="px-3.5 py-2 rounded-xl border border-slate-300 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
-    >
-      <option [ngValue]="null">All Courses</option>
-      @for (c of courses(); track c.id) {
-        <option [ngValue]="c.id">{{ c.courseCode }} - {{ c.courseName }}</option>
-      }
-    </select>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      <!-- Filter by Student -->
+      <div>
+        <label class="block text-[11px] font-semibold text-slate-500 mb-1">Filter by Student</label>
+        <select
+          [ngModel]="filterStudentId()"
+          (ngModelChange)="filterStudentId.set($event); applyFilter()"
+          class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm bg-slate-50/50 hover:bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 cursor-pointer transition"
+        >
+          <option [ngValue]="null">All Students</option>
+          @for (st of students(); track st.id) {
+            <option [ngValue]="st.id">{{ st.studentCode }} - {{ st.fullName }}</option>
+          }
+        </select>
+      </div>
 
-    <!-- Filter by Status -->
-    <select
-      [ngModel]="filterStatus()"
-      (ngModelChange)="filterStatus.set($event); applyFilter()"
-      class="px-3.5 py-2 rounded-xl border border-slate-300 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
-    >
-      <option value="">All Statuses</option>
-      <option value="ACTIVE">ACTIVE</option>
-      <option value="COMPLETED">COMPLETED</option>
-      <option value="CANCELLED">CANCELLED</option>
-    </select>
+      <!-- Filter by Course -->
+      <div>
+        <label class="block text-[11px] font-semibold text-slate-500 mb-1">Filter by Course</label>
+        <select
+          [ngModel]="filterCourseId()"
+          (ngModelChange)="filterCourseId.set($event); applyFilter()"
+          class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm bg-slate-50/50 hover:bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 cursor-pointer transition"
+        >
+          <option [ngValue]="null">All Courses</option>
+          @for (c of courses(); track c.id) {
+            <option [ngValue]="c.id">{{ c.courseCode }} - {{ c.courseName }}</option>
+          }
+        </select>
+      </div>
 
-    <!-- Reset Button -->
-    <button
-      (click)="resetFilter()"
-      class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium transition cursor-pointer"
-    >
-      Reset Filters
-    </button>
+      <!-- Filter by Status -->
+      <div>
+        <label class="block text-[11px] font-semibold text-slate-500 mb-1">Filter by Status</label>
+        <select
+          [ngModel]="filterStatus()"
+          (ngModelChange)="filterStatus.set($event); applyFilter()"
+          class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm bg-slate-50/50 hover:bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 cursor-pointer transition"
+        >
+          <option value="">All Statuses</option>
+          <option value="ACTIVE">ACTIVE</option>
+          <option value="COMPLETED">COMPLETED</option>
+          <option value="CANCELLED">CANCELLED</option>
+        </select>
+      </div>
+
+      <!-- Reset Filter Button -->
+      <div class="flex items-end">
+        <button
+          (click)="resetFilter()"
+          class="w-full inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs sm:text-sm font-semibold transition cursor-pointer"
+        >
+          <svg class="w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          <span>Reset Filters</span>
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- Table Card -->
   <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
     @if (loading()) {
-      <app-loading-spinner message="Loading enrollments..." />
+      <app-loading-spinner message="Retrieving enrollment records from database..." />
     } @else if (enrollments().length === 0) {
       <div class="p-12 text-center">
-        <p class="text-base font-semibold text-slate-700">No enrollment records found</p>
-        <p class="text-sm text-slate-400 mt-1">Click "+ New Enrollment" to assign a student to a course.</p>
+        <div class="w-14 h-14 mx-auto rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center mb-3">
+          <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          </svg>
+        </div>
+        <p class="text-base font-bold text-slate-800">No enrollment records found</p>
+        <p class="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
+          No records match the current filter selection, or no students have been enrolled yet.
+        </p>
+        <button
+          (click)="openAddModal()"
+          class="inline-flex items-center gap-1.5 mt-4 px-4 py-2 rounded-xl bg-indigo-600 text-white text-xs font-semibold hover:bg-indigo-700 transition shadow-sm cursor-pointer"
+        >
+          + Enroll Student
+        </button>
       </div>
     } @else {
+      <!-- Responsive Table Container -->
       <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
           <thead>
-            <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs uppercase whitespace-nowrap">
-              <th class="py-3.5 px-6 font-semibold">ID</th>
-              <th class="py-3.5 px-6 font-semibold">Student</th>
-              <th class="py-3.5 px-6 font-semibold">Course</th>
-              <th class="py-3.5 px-6 font-semibold">Enrollment Date</th>
-              <th class="py-3.5 px-6 font-semibold text-center">Status</th>
-              <th class="py-3.5 px-6 font-semibold text-right">Actions</th>
+            <tr class="bg-slate-50/80 border-b border-slate-200/70 text-slate-500 text-[11px] font-bold uppercase tracking-wider whitespace-nowrap">
+              <th class="py-3.5 px-6">ID</th>
+              <th class="py-3.5 px-6">Enrolled Student</th>
+              <th class="py-3.5 px-6">Course</th>
+              <th class="py-3.5 px-6">Enrollment Date</th>
+              <th class="py-3.5 px-6 text-center">Status</th>
+              <th class="py-3.5 px-6 text-right">Actions</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100 text-sm">
             @for (item of enrollments(); track item.id) {
-              <tr class="hover:bg-slate-50/80 transition">
-                <td class="py-3.5 px-6 font-medium text-slate-500 whitespace-nowrap">#{{ item.id }}</td>
-                
-                <td class="py-3.5 px-6 font-semibold text-slate-800 whitespace-nowrap max-w-[200px] truncate" [title]="getStudentDisplay(item)">
-                  {{ getStudentDisplay(item) }}
+              <tr class="hover:bg-slate-50/70 transition">
+                <!-- ID -->
+                <td class="py-3.5 px-6 font-mono text-xs font-semibold text-slate-400 whitespace-nowrap">
+                  #{{ item.id }}
                 </td>
-                
-                <td class="py-3.5 px-6 text-slate-700 font-medium whitespace-nowrap max-w-[250px] truncate" [title]="getCourseDisplay(item)">
-                  {{ getCourseDisplay(item) }}
+
+                <!-- Student -->
+                <td class="py-3.5 px-6 whitespace-nowrap">
+                  <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-500 to-violet-500 text-white font-bold flex items-center justify-center text-xs shrink-0 shadow-xs">
+                      {{ (getStudentName(item) || 'S').charAt(0).toUpperCase() }}
+                    </div>
+                    <span class="font-bold text-slate-800 truncate max-w-[220px] sm:max-w-xs" [title]="getStudentName(item)">
+                      {{ getStudentName(item) }}
+                    </span>
+                  </div>
                 </td>
-                
-                <td class="py-3.5 px-6 text-slate-500 whitespace-nowrap">{{ item.enrollmentDate }}</td>
-                
+
+                <!-- Course -->
+                <td class="py-3.5 px-6 whitespace-nowrap">
+                  <div class="flex items-center gap-2.5">
+                    @if (getCourseCode(item)) {
+                      <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 font-mono font-bold text-xs border border-indigo-200/80 shadow-2xs">
+                        {{ getCourseCode(item) }}
+                      </span>
+                    }
+                    <span class="font-semibold text-slate-800 truncate max-w-[220px] sm:max-w-xs" [title]="getCourseName(item)">
+                      {{ getCourseName(item) }}
+                    </span>
+                  </div>
+                </td>
+
+                <!-- Enrollment Date -->
+                <td class="py-3.5 px-6 text-slate-500 whitespace-nowrap text-xs font-medium">
+                  {{ item.enrollmentDate }}
+                </td>
+
+                <!-- Status Badge -->
                 <td class="py-3.5 px-6 text-center whitespace-nowrap">
                   <span
-                    class="px-2.5 py-1 rounded-full text-xs font-semibold"
+                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold"
                     [class]="
                       item.status === 'ACTIVE'
-                        ? 'bg-emerald-100 text-emerald-700'
+                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/60'
                         : item.status === 'COMPLETED'
-                        ? 'bg-indigo-100 text-indigo-700'
-                        : 'bg-rose-100 text-rose-700'
+                        ? 'bg-indigo-50 text-indigo-700 border border-indigo-200/60'
+                        : 'bg-rose-50 text-rose-700 border border-rose-200/60'
                     "
                   >
+                    <span
+                      class="w-1.5 h-1.5 rounded-full"
+                      [class]="
+                        item.status === 'ACTIVE'
+                          ? 'bg-emerald-500 animate-pulse'
+                          : item.status === 'COMPLETED'
+                          ? 'bg-indigo-500'
+                          : 'bg-rose-500'
+                      "
+                    ></span>
                     {{ item.status }}
                   </span>
                 </td>
-                
-                <!-- Action Buttons (Flex row for side-by-side) -->
-                <td class="py-3.5 px-6 text-right">
-                  <div class="flex items-center justify-end gap-2">
+
+                <!-- Actions -->
+                <td class="py-3.5 px-6 text-right whitespace-nowrap">
+                  <div class="flex items-center justify-end gap-1.5">
                     <button
                       (click)="openEditModal(item)"
-                      class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-50 text-amber-700 hover:bg-amber-100 transition cursor-pointer"
+                      class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200/60 transition cursor-pointer"
+                      title="Edit enrollment"
                     >
-                      Edit
+                      <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                      <span>Edit</span>
                     </button>
+
                     <button
                       (click)="confirmDelete(item)"
-                      class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-rose-50 text-rose-700 hover:bg-rose-100 transition cursor-pointer"
+                      class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200/60 transition cursor-pointer"
+                      title="Remove enrollment"
                     >
-                      Delete
+                      <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                      <span>Delete</span>
                     </button>
                   </div>
                 </td>
@@ -143,6 +229,7 @@
         </table>
       </div>
 
+      <!-- Pagination Component -->
       <app-pagination
         [currentPage]="currentPage()"
         [totalPages]="totalPages()"
@@ -155,10 +242,11 @@
   </div>
 </div>
 
+<!-- Confirm Dialog -->
 <app-confirm-dialog
   [isOpen]="!!enrollmentToDelete()"
-  title="Remove Enrollment"
-  message="Are you sure you want to remove this enrollment record?"
+  title="Remove Course Enrollment"
+  message="Are you sure you want to remove this student's enrollment from the course?"
   (confirm)="deleteEnrollment()"
   (cancel)="enrollmentToDelete.set(null)"
 />
